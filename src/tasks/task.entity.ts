@@ -12,7 +12,7 @@ export class Task extends BaseEntity {
     @Column()
     description: string;
 
-    @Column()
+    @Column({ default: TaskStatus.OPEN })
     status: TaskStatus;
 
 }
