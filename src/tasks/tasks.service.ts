@@ -14,13 +14,16 @@ export class TasksService {
         private taskRepository: Repository<Task>
     ) { }
 
-    // getTasks(filterDto: GetTasksFilterDto) {
 
-    // }
-
-    async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]>{
-        const {status, search} = filterDto;
+    async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
         const query = this.taskRepository.createQueryBuilder('task');
+        if (filterDto.status) {
+            query.andWhere('task.status = :status', { status: filterDto.status });
+        }
+
+        if (filterDto.search) {
+            query.andWhere('(task.title LIKE :search OR task.description LIKE :search OR task.status LIKE :search)', { search: `%${filterDto.search}%` });
+        }
 
         return await query.getMany();
     }
@@ -57,9 +60,9 @@ export class TasksService {
     async deleteTask(id: number): Promise<void> {
         const task = await this.taskRepository.delete(id);
         console.log(task);
-        
-        if(task.affected === 0){
+
+        if (task.affected === 0) {
             throw new NotFoundException(`Task with ${id} not found`);
-        }        
+        }
     }
 }
