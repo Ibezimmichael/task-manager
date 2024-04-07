@@ -3,6 +3,7 @@ import { CreateTaskDto } from "./dto/create-task.dto"
 import { Task } from "./task.entity"
 import { TaskStatus } from "./tasks-status-enum"
 import { GetTasksFilterDto } from "./dto/get-tasks-filter.dto"
+import { Logger } from "@nestjs/common"
 
 
 export async function createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
@@ -19,7 +20,8 @@ export async function createTask(createTaskDto: CreateTaskDto, user: User): Prom
 
 
 export async function getTasks(filterDto: GetTasksFilterDto, taskRepository, user: User): Promise<Task[]> {
-  
+    let logger = new Logger('GetTasks')
+    
     const { status, search } = filterDto
     const query = taskRepository.createQueryBuilder('task')
     
@@ -32,6 +34,7 @@ export async function getTasks(filterDto: GetTasksFilterDto, taskRepository, use
     if(search) {
         query.andWhere('(task.title LIKE :search OR task.description LIKE :search  OR task.status LIKE :search)', { search: `%${search}%` })
     }
+    
     const tasks = await query.getMany()
     return tasks
 }
