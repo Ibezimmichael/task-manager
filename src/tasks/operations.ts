@@ -3,7 +3,6 @@ import { CreateTaskDto } from "./dto/create-task.dto"
 import { Task } from "./task.entity"
 import { TaskStatus } from "./tasks-status-enum"
 import { GetTasksFilterDto } from "./dto/get-tasks-filter.dto"
-import { Logger } from "@nestjs/common"
 
 
 export async function createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
@@ -19,9 +18,7 @@ export async function createTask(createTaskDto: CreateTaskDto, user: User): Prom
 }
 
 
-export async function getTasks(filterDto: GetTasksFilterDto, taskRepository, user: User): Promise<Task[]> {
-    let logger = new Logger('GetTasks')
-    
+export async function getTasks(filterDto: GetTasksFilterDto, taskRepository, user: User): Promise<Task[]> {    
     const { status, search } = filterDto
     const query = taskRepository.createQueryBuilder('task')
     
